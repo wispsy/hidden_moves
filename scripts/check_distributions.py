@@ -49,7 +49,7 @@ def check_wheels(directory: Path) -> None:
 				raise ValueError(f"Missing Markdown README for {name}.")
 			if "Development Status :: 3 - Alpha" not in metadata.get_all("Classifier", []):
 				raise ValueError(f"Missing experimental classifier for {name}.")
-			if not any("https://github.com/outside-labs/hidden_moves" in url for url in metadata.get_all("Project-URL", [])):
+			if not any("https://github.com/wispsy/hidden_moves" in url for url in metadata.get_all("Project-URL", [])):
 				raise ValueError(f"Missing repository URL for {name}.")
 			if f"{PUBLIC[name]}/__init__.py" not in names:
 				raise ValueError(f"Missing import package for {name}.")

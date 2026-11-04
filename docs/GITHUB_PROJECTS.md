@@ -35,7 +35,7 @@ confirms access. See [GitHub's Projects API guide](https://docs.github.com/en/is
 
 ```sh
 /tmp/projects-demo-env/bin/python examples/projects_read.py \
-  outside-labs organization 2 --page-size 2 --field-page-size 2
+  wispsy organization 2 --page-size 2 --field-page-size 2
 ```
 
 Replace the owner identity and number with an allowed Project. The script makes
@@ -44,7 +44,7 @@ capture time, source URL, counts, cursors, and diagnostics, without dumping item
 titles/bodies or credentials.
 
 Verified October 4, 2026 at 21:04 UTC against the
-[Hidden Moves Project](https://github.com/orgs/outside-labs/projects/2): `get`
+[Hidden Moves Project](https://github.com/orgs/wispsy/projects/2): `get`
 returned Project 2 with node ID `PVT_kwDOE0y-h84BltEV`; the field page contained
 13 definitions and no next page; the two-item page reported a next cursor.
 Both items reported incomplete nested values at the deliberately small field-page

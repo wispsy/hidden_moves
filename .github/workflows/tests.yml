@@ -72,7 +72,7 @@ jobs:
       - name: Checkout tested Backpack storage
         uses: actions/checkout@v4
         with:
-          repository: outside-labs/backpack
+          repository: wispsy/backpack
           ref: 03840cec90523b5b622f9efd38f5b7140c14b418
           path: .dependencies/backpack
       - name: Build and install the optional Backpack wheel

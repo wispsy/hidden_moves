@@ -13,9 +13,9 @@ tools. Keep the capability registry and existing adapters unchanged.
 The existing foundation already implements typed definitions, provider discovery,
 target binding, schemas, selected catalogs, MCP, function tools, GitHub Projects,
 and optional Backpack snapshots. The remaining hosted tasks
-[PLG-02](https://github.com/outside-labs/hidden_moves/issues/11),
-[PLG-03](https://github.com/outside-labs/hidden_moves/issues/12), and
-[PLG-04](https://github.com/outside-labs/hidden_moves/issues/13) retain their
+[PLG-02](https://github.com/wispsy/hidden_moves/issues/11),
+[PLG-03](https://github.com/wispsy/hidden_moves/issues/12), and
+[PLG-04](https://github.com/wispsy/hidden_moves/issues/13) retain their
 identity/service decisions and publication boundaries. This local track does
 not depend on hosted identity.
 
@@ -23,14 +23,14 @@ not depend on hosted identity.
 
 Each row is one focused branch/PR. Build dependent work on the preceding branch,
 start CI as each PR becomes ready, then squash merge in dependency order.
-The [Hidden Moves Project](https://github.com/orgs/outside-labs/projects/2) and
+The [Hidden Moves Project](https://github.com/orgs/wispsy/projects/2) and
 linked issues own current task status.
 
 | Task | Scope | Acceptance |
 | --- | --- | --- |
-| [AGT-01](https://github.com/outside-labs/hidden_moves/issues/31) | Portable skill and workflow plan | Describe actual discovery, binding, selection, invocation, and verification; validate the skill against the current APIs |
-| [AGT-02](https://github.com/outside-labs/hidden_moves/issues/32) | Standalone workspace client | Explicit root and exact file selection; bounded listing, excerpts, and literal search; typed completeness/digests; path and resource-limit tests; standard library only |
-| [AGT-03](https://github.com/outside-labs/hidden_moves/issues/33) | Provider, configured host, and interoperability | Explicit file and capability selection; JSON CLI and stdio MCP; equivalent Python/catalog/MCP/function results; wheel and CI coverage; exercise the skill on real repository files |
+| [AGT-01](https://github.com/wispsy/hidden_moves/issues/31) | Portable skill and workflow plan | Describe actual discovery, binding, selection, invocation, and verification; validate the skill against the current APIs |
+| [AGT-02](https://github.com/wispsy/hidden_moves/issues/32) | Standalone workspace client | Explicit root and exact file selection; bounded listing, excerpts, and literal search; typed completeness/digests; path and resource-limit tests; standard library only |
+| [AGT-03](https://github.com/wispsy/hidden_moves/issues/33) | Provider, configured host, and interoperability | Explicit file and capability selection; JSON CLI and stdio MCP; equivalent Python/catalog/MCP/function results; wheel and CI coverage; exercise the skill on real repository files |
 
 ## Implementation choices
 

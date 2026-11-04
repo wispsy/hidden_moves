@@ -88,9 +88,9 @@ mutation input/payload schema were checked through bounded read-only GitHub call
 
 An explicitly authorized live proof completed on 2026-10-04 at
 22:58:43 UTC against the private
-[Projects write verification fixture](https://github.com/orgs/outside-labs/projects/4).
+[Projects write verification fixture](https://github.com/orgs/wispsy/projects/4).
 The installed wheel added the existing closed
-[Backpack setup issue](https://github.com/outside-labs/backpack/issues/1) and
+[Backpack setup issue](https://github.com/wispsy/backpack/issues/1) and
 verified its Project membership and content identity. A separate write dynamically
 resolved the `Status` field and changed its observed `Done` choice to `Todo`;
 the post-write read verified the new option. Both receipts reported
