@@ -121,7 +121,7 @@ class CliTests(unittest.TestCase):
 		):
 			result = self.runner.invoke(main, ["--plugin", "example", "moves", "call", "add", "--arguments", '{"value": 2}'])
 		self.assertEqual(result.exit_code, 0, result.output)
-		self.assertEqual(json.loads(result.output), 3)
+		self.assertEqual(json.loads(result.stdout), 3)
 
 	def test_capability_failure_has_a_terminal_error(self):
 		def failure() -> None:

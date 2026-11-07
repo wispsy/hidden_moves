@@ -97,7 +97,7 @@ def call_move(moves: Moves, name: str, arguments: str | None, from_stdin: bool,
 			raise ValueError("--stdin and --arguments are mutually exclusive.")
 		if input_key is not None and (not from_stdin or not input_key):
 			raise ValueError("--input-key requires --stdin and a nonempty argument name.")
-		document = (click.get_binary_stream("stdin").read(MAX_INPUT_BYTES + 1)
+		document = (sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
 			if from_stdin else (arguments if arguments is not None else "{}").encode("utf-8"))
 		values = _parse_document(document)
 		if input_key is not None:
@@ -131,7 +131,7 @@ def call_move(moves: Moves, name: str, arguments: str | None, from_stdin: bool,
 		_call_error("move_error", str(error), 1, json_errors)
 	except Exception as error:
 		_call_error("execution_failed", f"Capability {name!r} failed: {error}", 1, json_errors)
-	output = click.get_binary_stream("stdout")
+	output = sys.stdout.buffer
 	output.write((payload + "\n").encode("utf-8"))
 	output.flush()
 
