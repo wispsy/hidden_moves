@@ -11,6 +11,7 @@ from .errors import (
 	UnknownMoveError,
 )
 from .moves import Moves
+from .moveset import MoveSet
 from .registry import Registry
 from .spec import MoveSpec
 
@@ -23,6 +24,7 @@ __all__ = [
 	"MoveSchemaError",
 	"MoveDefinition",
 	"MoveSpec",
+	"MoveSet",
 	"Moves",
 	"ProviderLoadError",
 	"Registry",
