@@ -84,3 +84,7 @@ The CLI selects that one name, checks input before execution, awaits results in
 its own event loop when necessary, and prints validated JSON. The registry is
 empty until an application or explicitly selected provider registers operations.
 External providers must still be explicitly enabled with `--plugin NAME`.
+
+For actual pipes, use the [single-document JSON interface](JSON_TRANSPORT.md):
+`--stdin` reads argument objects and `--input-key NAME` explicitly wraps another
+JSON value. The CLI keeps diagnostics on stderr and supports `--json-errors`.

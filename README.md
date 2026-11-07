@@ -46,6 +46,10 @@ uv run hm --plugin example-text moves call example.text.repeat \
 `moves list/show/call`. An unconfigured CLI can inspect target-bound definitions;
 an application host must bind their target before structured invocation.
 
+The [JSON transport contract](docs/JSON_TRANSPORT.md) adds bounded `--stdin`
+calls, explicit `--input-key` wrapping for scalar or record outputs, and optional
+machine-readable call errors. Results stay on stdout; diagnostics use stderr.
+
 ## Ordinary functions
 
 Your functions remain directly usable without registration:

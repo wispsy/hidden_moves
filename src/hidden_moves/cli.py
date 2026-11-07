@@ -1,5 +1,8 @@
 """The CLI is an adapter around explicitly assembled Python capabilities."""
 
+import sys
+from contextlib import redirect_stdout
+
 import click
 
 from hidden_moves import MoveError, Moves, Registry, discover_providers, load_provider
@@ -23,7 +26,8 @@ def main(context: click.Context, plugins: tuple[str, ...]) -> None:
 				reason = "not installed" if not matches else "advertised by multiple packages"
 				raise click.ClickException(f"Provider {name!r} is {reason}.")
 			try:
-				load_provider(matches[0], registry)
+				with redirect_stdout(sys.stderr):
+					load_provider(matches[0], registry)
 			except MoveError as error:
 				raise click.ClickException(str(error)) from error
 	context.obj = Moves(registry=registry)
