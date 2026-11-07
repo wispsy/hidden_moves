@@ -45,7 +45,8 @@ def _parse_document(document: bytes) -> Any:
 
 def _call_error(code: str, message: str, status: int, as_json: bool) -> None:
 	if as_json:
-		click.echo(json.dumps({"error": {"code": code, "message": message}}), err=True)
+		# A trusted diagnostic may have omitted its terminating newline.
+		click.echo("\n" + json.dumps({"error": {"code": code, "message": message}}), err=True)
 	else:
 		click.echo(f"Error: {message}", err=True)
 	raise click.exceptions.Exit(status)
@@ -130,7 +131,9 @@ def call_move(moves: Moves, name: str, arguments: str | None, from_stdin: bool,
 		_call_error("move_error", str(error), 1, json_errors)
 	except Exception as error:
 		_call_error("execution_failed", f"Capability {name!r} failed: {error}", 1, json_errors)
-	click.echo(payload)
+	output = click.get_binary_stream("stdout")
+	output.write((payload + "\n").encode("utf-8"))
+	output.flush()
 
 
 @click.group(name="plugins")

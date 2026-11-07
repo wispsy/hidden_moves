@@ -28,7 +28,8 @@ and invalid/oversized JSON fail before invocation.
 
 Validated scalar or structured results go to stdout as one UTF-8 JSON document
 followed by a newline. Provider-loading and capability Python stdout diagnostics
-are redirected to stderr. This does not intercept native file-descriptor writes
+are redirected to stderr. Result bytes use UTF-8 regardless of the console's
+locale encoding. This does not intercept native file-descriptor writes
 or background work; trusted providers must own and await their output. Shell
 parsing, quoting, expansion and failure propagation belong to the calling shell.
 Use its pipe-failure option when the full pipeline must fail if any process fails.
@@ -37,6 +38,7 @@ Call errors use stderr and return nonzero. Add `--json-errors` to emit a final
 single-line `{"error":{"code":"...","message":"..."}}` record. Trusted provider
 or capability diagnostics can precede that record. Messages may include the
 capability's exception text; they are diagnostics, not a secret-redaction boundary.
+The error record begins on a fresh line even if a diagnostic omitted its newline.
 
 | Code | Exit | Meaning |
 | --- | --- | --- |

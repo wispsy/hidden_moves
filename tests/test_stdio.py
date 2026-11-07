@@ -25,11 +25,12 @@ class StdioTests(unittest.TestCase):
 			def echo(value: dict[str, int]) -> dict[str, int]:
 			    return value
 			def failure() -> None:
+			    print("partial failure diagnostic", end="")
 			    raise RuntimeError("synthetic failure")
 			def invalid() -> list[int]:
 			    return {1}
 			def provide_moves():
-			    print("provider diagnostic")
+			    print("provider diagnostic", end="")
 			    group = MoveSet("text")
 			    for function in (normalize, report, echo, failure, invalid):
 			        group.learn(function)
@@ -86,6 +87,14 @@ class StdioTests(unittest.TestCase):
 		result = self.call("text.normalize", "--stdin", "--json-errors", data=b'"hello"')
 		self.assertEqual(result.returncode, 2)
 		self.assertEqual(self.error_code(result), "invalid_input")
+
+	def test_result_bytes_are_utf8_even_with_a_non_utf8_stdout_encoding(self):
+		result = subprocess.run([*self.command, "text.normalize", "--stdin"],
+			input=json.dumps({"text": " HÉLLO 🍑 "}).encode("ascii"),
+			capture_output=True, env={**self.env, "PYTHONIOENCODING": "cp1252"}, timeout=15)
+		self.assertEqual(result.returncode, 0, result.stderr)
+		self.assertIn("🍑".encode("utf-8"), result.stdout)
+		self.assertEqual(json.loads(result.stdout), "héllo 🍑")
 
 	def test_invalid_documents_fail_before_invocation(self):
 		for data in (b"", b"{broken", b"{} {}", b'{"text":"a","text":"b"}',
