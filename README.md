@@ -71,6 +71,10 @@ typed Python behavior through supported model conversion.
 
 ## Per-object binding
 
+Reusable [MoveSet groups](docs/MOVE_SETS.md) collect namespaced definitions and
+install them atomically into a registry. Groups preserve binding/schema metadata
+and remain separate from workflow execution.
+
 `bind_target=True` supplies the container's target as the first positional argument.
 Definitions can be shared while each container retains its own target:
 
