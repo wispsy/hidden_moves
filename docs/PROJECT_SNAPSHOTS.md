@@ -77,7 +77,7 @@ completeness diagnostics without printing credentials, titles or content bodies.
 ## Verified live capture
 
 On October 4, 2026 at `22:00:29.043023Z`, one explicitly selected item from
-[Outside Labs Project 2](https://github.com/orgs/outside-labs/projects/2) was fetched
+[Outside Labs Project 2](https://github.com/orgs/wispsy/projects/2) was fetched
 using the existing CLI login and stored in a temporary local database. Reopening
 recovered the typed Project/item, separate local UUID, schema identity and source
 provenance. `field_values_complete` remained false with an
