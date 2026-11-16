@@ -7,8 +7,9 @@ notes. It is an experimental interface, without a stable compatibility promise.
 
 `core/` uses only the Python standard library. Domain libraries and clients own
 their behavior. Applications and explicitly loaded providers assemble move
-definitions. `commands/` and `cli.py` adapt those definitions to Click; both the
-generic CLI and MCP executable start with an empty registry.
+definitions. `commands/` and `cli.py` adapt those definitions through
+`expose-interface`; both the generic CLI and MCP executable start with an empty
+registry.
 
 The core owns no HTTP transport, file-writing policy, storage engine, credential
 loading, or persistent service. These belong to ordinary libraries or applications.

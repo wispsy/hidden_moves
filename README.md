@@ -14,8 +14,10 @@ numbered excerpts and literal search over an explicitly selected set of local fi
 
 ## Installation and CLI
 
-Python 3.11 or newer is required. Click is the core distribution's only runtime
-dependency. Registry, schema, and catalog modules use the standard library.
+Python 3.11 or newer is required. The source CLI uses `expose-interface` as the
+core distribution's only runtime dependency. Registry, schema, and catalog
+modules use the standard library. See the [CLI migration notes](docs/MIGRATIONS.md#cli-interface)
+for the change from the initial release.
 
 ```sh
 python -m pip install hidden-moves==0.1.0

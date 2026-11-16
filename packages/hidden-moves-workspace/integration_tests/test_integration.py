@@ -13,7 +13,6 @@ from importlib.metadata import EntryPoint
 from pathlib import Path
 from unittest.mock import patch
 
-from click.testing import CliRunner
 from hidden_moves_mcp import MCPAdapter
 from hidden_moves_openai import FunctionToolAdapter
 from hidden_moves_workspace import Workspace
@@ -27,7 +26,6 @@ from hidden_moves.adapters import (
     CapabilityCatalog,
     CapabilityExposureError,
 )
-from hidden_moves.cli import main as generic_cli
 
 
 class WorkspaceFixture:
@@ -65,12 +63,11 @@ class ProviderTests(WorkspaceFixture, unittest.TestCase):
             self.assertEqual(len(provide_moves()), 3)
 
     def test_generic_cli_can_inspect_but_cannot_infer_a_workspace(self):
-        runner = CliRunner()
-        result = runner.invoke(generic_cli, ["--plugin", "workspace", "moves", "show", "workspace.read"])
-        self.assertEqual(result.exit_code, 0, result.output)
-        self.assertFalse(json.loads(result.output)["available"])
-        result = runner.invoke(generic_cli, ["--plugin", "workspace", "moves", "call", "workspace.read", "--arguments", '{"path":"demo.txt"}'])
-        self.assertNotEqual(result.exit_code, 0)
+        result = subprocess.run([sys.executable, "-m", "hidden_moves", "--plugin", "workspace", "moves", "show", "workspace.read"], capture_output=True, text=True, check=False, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(json.loads(result.stdout)["available"])
+        result = subprocess.run([sys.executable, "-m", "hidden_moves", "--plugin", "workspace", "moves", "call", "workspace.read", "--arguments", '{"path":"demo.txt"}'], capture_output=True, text=True, check=False, timeout=10)
+        self.assertNotEqual(result.returncode, 0)
 
     def test_bound_catalog_keeps_root_private_and_rejects_unselected_names(self):
         with patch.object(Workspace, "_read", side_effect=AssertionError("content read")):

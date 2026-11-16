@@ -63,6 +63,8 @@ def check_wheels(directory: Path) -> None:
 			if name in {"hidden-moves-github-projects", "hidden-moves-workspace"} and any(";" not in requirement for requirement in requirements):
 				raise ValueError("Ordinary domain clients must have no mandatory dependencies.")
 			if name == "hidden-moves":
+				if {requirement.replace(" ", "") for requirement in requirements} != {"expose-interface>=0.1.0,<0.2.0"}:
+					raise ValueError("Core must depend only on the tested expose-interface minor range.")
 				allowed = {"core", "adapters", "commands", "__init__.py", "__main__.py", "cli.py"}
 				for item in names:
 					if item.startswith("hidden_moves/") and not item.endswith("/") and item.split("/")[1] not in allowed:

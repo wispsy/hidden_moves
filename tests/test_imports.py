@@ -33,6 +33,7 @@ class ImportTests(unittest.TestCase):
 			):
 				import hidden_moves
 				assert "click" not in sys.modules, "core imported Click"
+				assert "expose_interface" not in sys.modules, "core imported the CLI framework"
 				assert "mcp" not in sys.modules, "core imported an optional adapter SDK"
 				for module in (
 					"hidden_moves.adapters",
@@ -40,6 +41,7 @@ class ImportTests(unittest.TestCase):
 					"hidden_moves.__main__",
 				):
 					importlib.import_module(module)
+				assert "click" not in sys.modules, "CLI imported Click"
 		""")
 		with tempfile.TemporaryDirectory() as temporary:
 			result = subprocess.run(

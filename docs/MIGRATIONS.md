@@ -1,5 +1,22 @@
 # Experimental migration notes
 
+## CLI interface
+
+The source CLI now uses the published `expose-interface` 0.1.x package instead of
+Click. This source change is not a new Hidden Moves package release; the initial
+0.1.0 release notes describe the earlier dependency.
+
+Both `hidden-moves` and `hm`, plus `python -m hidden_moves`, retain `plugins list`
+and `moves list/show/call`. Repeated `--plugin` options remain explicit and scoped
+to one invocation. Help and malformed command lines do not load providers.
+Strict JSON arguments, bounded stdin, UTF-8 results, stderr diagnostics, async
+calls, structured error codes, and exit statuses retain their existing contract.
+Help and parser diagnostics use the new framework's formatting.
+
+CLI tests can call `hidden_moves.cli.main(argv)` and capture its streams and
+`SystemExit`, or run an installed executable in a subprocess. The former Click
+command objects and `click.testing.CliRunner` are no longer used.
+
 ## Narrowed 0.1.0 framework
 
 Before the first public package upload, the framework was narrowed to registration,
