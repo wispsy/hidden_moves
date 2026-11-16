@@ -10,7 +10,6 @@ from importlib.metadata import EntryPoint
 from pathlib import Path
 from unittest.mock import patch
 
-from click.testing import CliRunner
 from hidden_moves_github_projects import ProjectsClient
 from hidden_moves_github_projects.host import build_catalog, resolve_gh_token
 from hidden_moves_github_projects.integration import READ_CAPABILITIES, provide_moves
@@ -25,7 +24,6 @@ from hidden_moves.adapters import (
 	CapabilityCatalog,
 	CapabilityExposureError,
 )
-from hidden_moves.cli import main
 
 CAPABILITY = "github.projects.items"
 ARGUMENTS = {"project_id": "PVT_demo", "page_size": 5, "field_page_size": 10}
@@ -50,13 +48,12 @@ class ProviderTests(unittest.TestCase):
 				CapabilityCatalog(moves, [CAPABILITY])
 
 	def test_generic_cli_can_inspect_but_cannot_invent_account_binding(self):
-		runner = CliRunner()
-		result = runner.invoke(main, ["--plugin", "github-projects", "moves", "show", CAPABILITY])
-		self.assertEqual(result.exit_code, 0, result.output)
-		self.assertFalse(json.loads(result.output)["available"])
-		result = runner.invoke(main, ["--plugin", "github-projects", "moves", "call", CAPABILITY, "--arguments", json.dumps(ARGUMENTS)])
-		self.assertEqual(result.exit_code, 1)
-		self.assertIn("requires Moves", result.output)
+		result = subprocess.run([sys.executable, "-m", "hidden_moves", "--plugin", "github-projects", "moves", "show", CAPABILITY], capture_output=True, text=True, check=False, timeout=10)
+		self.assertEqual(result.returncode, 0, result.stderr)
+		self.assertFalse(json.loads(result.stdout)["available"])
+		result = subprocess.run([sys.executable, "-m", "hidden_moves", "--plugin", "github-projects", "moves", "call", CAPABILITY, "--arguments", json.dumps(ARGUMENTS)], capture_output=True, text=True, check=False, timeout=10)
+		self.assertEqual(result.returncode, 1)
+		self.assertIn("requires Moves", result.stderr)
 
 	def test_bound_catalog_keeps_credentials_private_and_selection_enforced(self):
 		transport = ReplayTransport()

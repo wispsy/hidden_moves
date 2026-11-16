@@ -5,12 +5,10 @@ import subprocess
 import sys
 import unittest
 
-from click.testing import CliRunner
 from hidden_moves_example_text import prefix_text, repeat_text
 
 from hidden_moves import Moves, ProviderLoadError, discover_providers, load_provider
 from hidden_moves.adapters import CapabilityCatalog
-from hidden_moves.cli import main
 
 
 class ExampleProviderTests(unittest.TestCase):
@@ -60,12 +58,11 @@ assert "hidden_moves_example_text.integration" not in sys.modules
 		self.assertEqual(moves.example.text.repeat("hello"), "hello hello")
 
 	def test_real_provider_cli_activation_is_scoped_to_one_invocation(self):
-		runner = CliRunner()
-		result = runner.invoke(main, ["--plugin", "example-text", "moves", "call", "example.text.repeat", "--arguments", '{"value": "hello", "count": 3}'])
-		self.assertEqual(result.exit_code, 0, result.output)
-		self.assertEqual(json.loads(result.output), "hello hello hello")
-		unloaded = runner.invoke(main, ["moves", "show", "example.text.repeat"])
-		self.assertNotEqual(unloaded.exit_code, 0)
+		result = subprocess.run([sys.executable, "-m", "hidden_moves", "--plugin", "example-text", "moves", "call", "example.text.repeat", "--arguments", '{"value": "hello", "count": 3}'], capture_output=True, text=True, check=False, timeout=10)
+		self.assertEqual(result.returncode, 0, result.stderr)
+		self.assertEqual(json.loads(result.stdout), "hello hello hello")
+		unloaded = subprocess.run([sys.executable, "-m", "hidden_moves", "moves", "show", "example.text.repeat"], capture_output=True, text=True, check=False, timeout=10)
+		self.assertNotEqual(unloaded.returncode, 0)
 
 	def test_installed_provider_binds_independent_targets_without_exposing_them(self):
 		unbound = Moves()

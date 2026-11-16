@@ -9,7 +9,7 @@ source of behavior. The registry adds no workflow engine or application lifecycl
 
 | Distribution | Python import | Runtime dependencies | Purpose |
 | --- | --- | --- | --- |
-| `hidden-moves` | `hidden_moves` | Click for the CLI | Registry, binding, descriptions, schemas, selected catalog, and CLI |
+| `hidden-moves` | `hidden_moves` | `expose-interface>=0.1.0,<0.2.0` for the source CLI | Registry, binding, descriptions, schemas, selected catalog, and CLI |
 | `hidden-moves-example-text` | `hidden_moves_example_text` | None for ordinary use | Independently usable example with an optional entry-point integration |
 | `hidden-moves-mcp` | `hidden_moves_mcp` | Core package and `mcp>=2.3.0,<3` | Selected tools through the official MCP SDK |
 | `hidden-moves-openai` | `hidden_moves_openai` | Core package | Responses function definitions and offline dispatch |
