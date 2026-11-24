@@ -20,10 +20,12 @@ jobs:
       package: ${{ steps.release.outputs.package }}
       environment: ${{ steps.release.outputs.environment }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ github.event.release.tag_name }}
           persist-credentials: false
+          fetch-depth: 0
+      - run: git merge-base --is-ancestor HEAD origin/main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -42,7 +44,7 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
-          python scripts/check_release.py --tag "$RELEASE_TAG" --check dist
+          python scripts/check_release.py --tag "$RELEASE_TAG" --check dist --receipt-file release-artifacts.json
           python -m twine check --strict dist/*
       - name: Verify installed wheel and public interfaces
         shell: bash
@@ -86,7 +88,7 @@ jobs:
           PY
               "$test_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/tests" -p test_client.py -v
               uv pip install --python "$test_venv/bin/python" \
-                'hidden-moves-mcp>=0.1,<0.2' 'hidden-moves-openai>=0.1,<0.2' 'backpack-store>=0.1,<0.2'
+                'hidden-moves-mcp>=0.1,<0.2' 'hidden-moves-openai>=0.1,<0.2' 'backpack-store==0.2.0'
               uv pip check --python "$test_venv/bin/python"
               "$test_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/tests" -v
               "$test_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/write_tests" -v
@@ -95,9 +97,37 @@ jobs:
               "$test_venv/bin/hidden-moves-github-projects-write" --help
               "$test_venv/bin/python" examples/projects_snapshot_demo.py
               ;;
+            hidden-moves-workspace)
+              "$test_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/tests" -v
+              "$test_venv/bin/python" -I -c "import hidden_moves_workspace"
+              uv pip install --python "$test_venv/bin/python" 'hidden-moves>=0.1.1,<0.2' 'hidden-moves-mcp>=0.1,<0.2'
+              "$test_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/integration_tests" -v
+              "$test_venv/bin/hidden-moves-workspace" --help
+              ;;
             *) exit 1 ;;
           esac
-      - uses: actions/upload-artifact@v5
+      - name: Verify selected source installation
+        shell: bash
+        env:
+          PACKAGE: ${{ steps.release.outputs.package }}
+          PACKAGE_DIRECTORY: ${{ steps.release.outputs.package_directory }}
+        run: |
+          source_venv="${RUNNER_TEMP}/selected-source"
+          uv venv "$source_venv" --python 3.13
+          uv pip install --python "$source_venv/bin/python" dist/*.tar.gz
+          uv pip check --python "$source_venv/bin/python"
+          if [ "$PACKAGE" = hidden-moves ]; then
+            "$source_venv/bin/python" -m unittest discover -s tests -v
+            "$source_venv/bin/hidden-moves" --help
+          else
+            "$source_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/tests" -p test_client.py -v
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: release-receipt
+          path: release-artifacts.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: ${{ steps.release.outputs.package }}-distributions
           path: dist/
@@ -114,8 +144,8 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: ${{ needs.build.outputs.package }}-distributions
           path: dist/
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086
