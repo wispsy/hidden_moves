@@ -1,6 +1,6 @@
 [project]
 name = "hidden-moves-workspace"
-version = "0.1.0a1"
+version = "0.1.0a2"
 description = "Bounded typed context over explicitly selected local text files."
 readme = "README.md"
 requires-python = ">=3.11"
