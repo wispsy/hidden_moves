@@ -14,15 +14,16 @@ from check_release import PACKAGES, check_distributions, select_release
 
 class ReleaseTests(unittest.TestCase):
     def test_core_tag_keeps_its_existing_environment(self):
-        self.assertEqual(select_release("v0.1.0"), {
+        self.assertEqual(select_release("v0.1.1"), {
             "package": "hidden-moves", "package_directory": ".",
-            "version": "0.1.0", "environment": "pypi",
+            "version": "0.1.1", "environment": "pypi",
         })
 
     def test_each_package_has_an_exact_version_and_environment(self):
         for name, (directory, suffix, environment) in PACKAGES.items():
             with self.subTest(name=name):
-                release = select_release("v0.1.0" + suffix)
+                version = "0.1.1" if name in ("hidden-moves", "hidden-moves-github-projects") else "0.1.0a1" if name == "hidden-moves-workspace" else "0.1.0"
+                release = select_release("v" + version + suffix)
                 self.assertEqual(release["package"], name)
                 self.assertEqual(release["package_directory"], directory)
                 self.assertEqual(release["environment"], environment)
@@ -33,12 +34,12 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(release["environment"], "pypi-openai")
 
     def test_projects_tag_uses_its_own_publisher(self):
-        release = select_release("v0.1.0-github-projects")
+        release = select_release("v0.1.1-github-projects")
         self.assertEqual(release["package"], "hidden-moves-github-projects")
         self.assertEqual(release["environment"], "pypi-github-projects")
 
     def test_unknown_malformed_and_mismatched_tags_are_rejected(self):
-        for tag in ("0.1.0", "v0.1.1", "v0.1.0-unknown", "v0.1.0-mcp-extra", "v0.1.0-mcp\n", "v0.1.0/../mcp"):
+        for tag in ("0.1.0", "v0.1.0", "v0.1.0-unknown", "v0.1.0-mcp-extra", "v0.1.0-mcp\n", "v0.1.0/../mcp"):
             with self.subTest(tag=tag), self.assertRaises(ValueError):
                 select_release(tag)
 

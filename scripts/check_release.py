@@ -1,6 +1,8 @@
 """Select and verify exactly one distribution for a published release tag."""
 
 import argparse
+import hashlib
+import json
 import tarfile
 import tomllib
 from email.parser import BytesParser
@@ -10,6 +12,7 @@ from zipfile import ZipFile
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = {
     "hidden-moves": (".", "", "pypi"),
+    "hidden-moves-workspace": ("packages/hidden-moves-workspace", "-workspace", "pypi-workspace"),
     "hidden-moves-mcp": ("packages/hidden-moves-mcp", "-mcp", "pypi-mcp"),
     "hidden-moves-openai": ("packages/hidden-moves-openai", "-openai", "pypi-openai"),
     "hidden-moves-github-projects": (
@@ -33,7 +36,7 @@ def select_release(tag: str) -> dict[str, str]:
     raise ValueError("Release tag must match a configured package version and suffix.")
 
 
-def check_distributions(directory: Path, tag: str) -> None:
+def check_distributions(directory: Path, tag: str, receipt_file: Path | None = None) -> None:
     release = select_release(tag)
     stem = release["package"].replace("-", "_") + "-" + release["version"]
     expected = {stem + "-py3-none-any.whl", stem + ".tar.gz"}
@@ -54,8 +57,16 @@ def check_distributions(directory: Path, tag: str) -> None:
             raise ValueError("Distribution name does not match the release.")
         if metadata["Version"] != release["version"]:
             raise ValueError("Distribution version does not match the release.")
+        if any("@" in value for value in metadata.get_all("Requires-Dist", [])):
+            raise ValueError("Release dependencies must use package-index requirements.")
         if metadata["Requires-Python"] != ">=3.11" or metadata["License-Expression"] != "MIT":
             raise ValueError("Distribution Python or license metadata does not match the release contract.")
+    receipt = {"distribution": release["package"], "version": release["version"], "tag": tag,
+               "artifacts": [{"filename": filename, "bytes": (directory / filename).stat().st_size,
+                              "sha256": hashlib.sha256((directory / filename).read_bytes()).hexdigest()}
+                             for filename in sorted(expected)]}
+    if receipt_file:
+        receipt_file.write_text(json.dumps(receipt, indent=2) + "\n")
     print(f"Verified wheel and source distribution for {release['package']} {release['version']}.")
 
 
@@ -64,6 +75,7 @@ def main() -> None:
     parser.add_argument("--tag", required=True)
     parser.add_argument("--output", type=Path, help="Append package selection to a GitHub Actions output file.")
     parser.add_argument("--check", type=Path, help="Verify the selected release artifact directory.")
+    parser.add_argument("--receipt-file", type=Path)
     args = parser.parse_args()
     release = select_release(args.tag)
     output = "".join(f"{key}={value}\n" for key, value in release.items())
@@ -72,7 +84,7 @@ def main() -> None:
             destination.write(output)
     print(output, end="")
     if args.check:
-        check_distributions(args.check, args.tag)
+        check_distributions(args.check, args.tag, args.receipt_file)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ import subprocess
 import sys
 import sysconfig
 import tempfile
+import tomllib
 from email.parser import BytesParser
 from pathlib import Path
 from zipfile import ZipFile
@@ -38,7 +39,9 @@ def check_wheels(directory: Path) -> None:
 				continue
 			if name not in PUBLIC:
 				raise ValueError(f"Unexpected distribution {name}.")
-			if metadata["Version"] != "0.1.0" or metadata["Requires-Python"] != ">=3.11":
+			project_path = Path(__file__).resolve().parents[1] / ("pyproject.toml" if name == "hidden-moves" else f"packages/{name}/pyproject.toml")
+			project = tomllib.loads(project_path.read_text())["project"]
+			if metadata["Version"] != project["version"] or metadata["Requires-Python"] != ">=3.11":
 				raise ValueError(f"Unexpected version/runtime metadata for {name}.")
 			if metadata["License-Expression"] != "MIT" or metadata.get_all("License-File") != ["LICENSE"]:
 				raise ValueError(f"Missing MIT license metadata for {name}.")
