@@ -22,7 +22,7 @@ class ReleaseTests(unittest.TestCase):
     def test_each_package_has_an_exact_version_and_environment(self):
         for name, (directory, suffix, environment) in PACKAGES.items():
             with self.subTest(name=name):
-                version = "0.1.1" if name in ("hidden-moves", "hidden-moves-github-projects") else "0.1.0a1" if name == "hidden-moves-workspace" else "0.1.0"
+                version = "0.1.1" if name in ("hidden-moves", "hidden-moves-github-projects") else "0.1.0a2" if name == "hidden-moves-workspace" else "0.1.0"
                 release = select_release("v" + version + suffix)
                 self.assertEqual(release["package"], name)
                 self.assertEqual(release["package_directory"], directory)

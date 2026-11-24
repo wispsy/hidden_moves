@@ -62,8 +62,8 @@ The ordinary client has no mandatory runtime dependencies.
 
 Core 0.1.1 includes capability groups, strict JSON pipes, passive validation and
 the Expose Interface CLI. GitHub Projects 0.1.1 selects current published
-Backpack Store 0.2.0. Workspace 0.1.0a1 is its first bounded local-context preview.
-Use tags `v0.1.1`, `v0.1.1-github-projects`, and `v0.1.0a1-workspace`, respectively.
+Backpack Store 0.2.0. Workspace 0.1.0a2 is its first bounded local-context preview.
+Use tags `v0.1.1`, `v0.1.1-github-projects`, and `v0.1.0a2-workspace`, respectively.
 The existing per-package environment routing is retained. Workspace requires
 Trusted Publisher owner `wispsy`, repository `hidden_moves`, workflow
 `release.yaml`, environment `pypi-workspace`. The workflow qualifies wheel and
@@ -71,3 +71,7 @@ source files and retains their SHA256 receipt. No workspace data is published.
 
 [Wispsy Releases](https://github.com/orgs/wispsy/projects/31) tracks actual index
 publication separately from source readiness and downstream adoption.
+
+The first workspace source tag 0.1.0a1 did not publish: its standalone
+integration check needed the separately published function-tool adapter.
+The corrected qualification uses 0.1.0a2 and retains the original tag.

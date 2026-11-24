@@ -100,7 +100,7 @@ jobs:
             hidden-moves-workspace)
               "$test_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/tests" -v
               "$test_venv/bin/python" -I -c "import hidden_moves_workspace"
-              uv pip install --python "$test_venv/bin/python" 'hidden-moves>=0.1.1,<0.2' 'hidden-moves-mcp>=0.1,<0.2'
+              uv pip install --python "$test_venv/bin/python" 'hidden-moves>=0.1.1,<0.2' 'hidden-moves-mcp>=0.1,<0.2' 'hidden-moves-openai==0.1.0'
               "$test_venv/bin/python" -m unittest discover -s "$PACKAGE_DIRECTORY/integration_tests" -v
               "$test_venv/bin/hidden-moves-workspace" --help
               ;;
